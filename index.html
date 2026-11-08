@@ -3,138 +3,73 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#061016" />
-    <meta name="description" content="Essayage AR nanotechnologique local avec suivi corporel par webcam." />
-    <title>STARK INDUSTRIES // NANOTECH</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
-    <style>
-      :root {
-        color-scheme: dark;
-        font-family: "DM Mono", monospace;
-        color: #d7e8ee;
-        background: #050b10;
-        font-synthesis: none;
-        text-rendering: optimizeLegibility;
-        --cyan: #00f3ff;
-        --gold: #ffb700;
-        --muted: #78909a;
-        --line: rgba(0, 243, 255, .22);
-        --panel: rgba(5, 15, 21, .86);
-      }
-      * { box-sizing: border-box; }
-      body { margin: 0; min-width: 320px; min-height: 100vh; background: radial-gradient(ellipse at 50% 40%, #10212a, #050b10 72%); }
-      button { font: inherit; }
-      .shell { max-width: 1720px; min-height: 100vh; margin: auto; padding: 0 30px; display: flex; flex-direction: column; }
-      .topbar { height: 74px; display: flex; align-items: center; justify-content: space-between; gap: 20px; border-bottom: 1px solid var(--line); }
-      .brand { display: flex; align-items: center; gap: 12px; color: #effcff; font: 700 16px "Barlow Condensed", sans-serif; letter-spacing: .17em; }
-      .brand-mark { display: grid; width: 31px; height: 31px; place-items: center; color: var(--cyan); border: 1px solid var(--cyan); box-shadow: 0 0 16px #00f3ff35; }
-      .brand small { display: block; margin-top: 2px; color: var(--muted); font: 9px "DM Mono", monospace; letter-spacing: .13em; }
-      .connection { display: flex; align-items: center; gap: 9px; color: #96aeb8; font-size: 10px; letter-spacing: .08em; }
-      .dot { width: 8px; height: 8px; border-radius: 50%; background: #596a70; }
-      .dot.online { background: var(--cyan); box-shadow: 0 0 12px var(--cyan); }
-      .button { min-height: 38px; padding: 0 15px; border: 1px solid var(--cyan); background: #00f3ff12; color: #b7fbff; cursor: pointer; font-size: 10px; letter-spacing: .09em; transition: .2s ease; }
-      .button:hover:not(:disabled) { background: #00f3ff24; box-shadow: 0 0 18px #00f3ff2a; }
-      .button:disabled { opacity: .4; cursor: not-allowed; }
-      .button.gold { border-color: var(--gold); color: #ffe4a0; background: #ffb70011; }
-      .workspace { flex: 1; min-height: 570px; display: grid; grid-template-columns: minmax(0, 1fr) 278px; gap: 20px; padding: 22px 0; }
-      .stage { position: relative; min-height: 540px; overflow: hidden; border: 1px solid #28515b; background: #071016; box-shadow: inset 0 0 90px #00131c; }
-      #webcam, #scene { position: absolute; inset: 0; width: 100%; height: 100%; }
-      #webcam { object-fit: cover; transform: scaleX(-1); }
-      #scene { pointer-events: none; }
-      .scan { position: absolute; z-index: 2; inset: 0; pointer-events: none; opacity: .17; background: repeating-linear-gradient(0deg, transparent 0 3px, #00f3ff1c 4px); }
-      .stage-label { position: absolute; z-index: 3; top: 20px; left: 22px; color: #d9f9ff; font-size: 9px; letter-spacing: .12em; }
-      .stage-label span { color: var(--cyan); }
-      .reticle { position: absolute; z-index: 2; top: 50%; left: 50%; width: 72px; height: 72px; border: 1px solid #00f3ff4a; border-radius: 50%; transform: translate(-50%, -50%); pointer-events: none; }
-      .reticle::before, .reticle::after { position: absolute; content: ""; background: #00f3ff77; }
-      .reticle::before { top: 35px; left: -12px; width: 94px; height: 1px; }
-      .reticle::after { top: -12px; left: 35px; width: 1px; height: 94px; }
-      .hint { position: absolute; z-index: 4; left: 20px; right: 20px; bottom: 20px; padding: 11px 14px; border: 1px solid #00f3ff55; background: #050d13df; color: #d8faff; font-size: 10px; line-height: 1.65; }
-      .hint[hidden] { display: none; }
-      .panel { display: flex; flex-direction: column; border: 1px solid var(--line); background: linear-gradient(160deg, #0b1820ed, #061016ed); }
-      .panel-head { padding: 18px; border-bottom: 1px solid var(--line); color: #d9f7fc; font: 600 12px "Barlow Condensed", sans-serif; letter-spacing: .14em; }
-      .module { padding: 17px 18px; border-bottom: 1px solid var(--line); }
-      .module-title { margin-bottom: 16px; color: #e0f0f3; font: 600 12px "Barlow Condensed", sans-serif; letter-spacing: .11em; }
-      .module-title b { margin-right: 7px; color: var(--cyan); font: 10px "DM Mono", monospace; }
-      .metric { display: flex; justify-content: space-between; gap: 8px; margin: 13px 0; color: #91a6ae; font-size: 9px; }
-      .value { color: #8299a5; text-align: right; }
-      .value.active { color: var(--cyan); text-shadow: 0 0 8px #00f3ff44; }
-      .value.gold { color: var(--gold); }
-      .health { height: 4px; margin: 10px 0 7px; background: #1b2b30; }
-      .health > i { display: block; width: 0; height: 100%; background: linear-gradient(90deg, #008eaa, var(--cyan)); box-shadow: 0 0 10px var(--cyan); transition: width .2s ease; }
-      .health.gold > i { background: linear-gradient(90deg, #a86a00, var(--gold)); box-shadow: 0 0 10px var(--gold); }
-      .progress { height: 3px; margin: 18px 0 10px; background: #1b2b30; }
-      .progress i { display: block; width: 0; height: 100%; background: var(--cyan); box-shadow: 0 0 10px var(--cyan); }
-      .progress-label { display: flex; justify-content: space-between; margin-bottom: 13px; color: #9ab0b9; font-size: 8px; }
-      .panel .button { width: 100%; }
-      .debug { display: flex; gap: 8px; align-items: center; margin-top: 14px; color: #93aab3; font-size: 8px; cursor: pointer; }
-      .debug input { accent-color: var(--cyan); }
-      .help { margin: 10px 0 0; color: #78909a; font-size: 9px; line-height: 1.6; }
-      .panel-footer { margin-top: auto; padding: 13px 10px; color: #78909a; text-align: center; font-size: 8px; letter-spacing: .07em; }
-      .bottombar { min-height: 42px; display: flex; justify-content: space-between; align-items: center; gap: 10px; border-top: 1px solid var(--line); color: #6f858e; font-size: 8px; letter-spacing: .06em; }
-      @media (max-width: 850px) { .shell { padding: 0 15px; } .workspace { grid-template-columns: 1fr; } .stage { min-height: 55vh; } .panel { display: grid; grid-template-columns: 1fr 1fr; } .panel-head, .panel-footer { grid-column: 1 / -1; } }
-      @media (max-width: 520px) { .shell { padding: 0 10px; } .topbar { height: 62px; } .connection { display: none; } .workspace { padding: 12px 0; } .stage { min-height: 50vh; } .panel { grid-template-columns: 1fr; } .panel-head, .panel-footer { grid-column: auto; } .bottombar span:nth-child(2) { display: none; } }
-    </style>
-    <script type="importmap">
-      {
-        "imports": {
-          "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
-          "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
-        }
-      }
-    </script>
+    <meta name="theme-color" content="#071019" />
+    <meta name="description" content="Démonstrateur AR de suit-up nanotechnologique en temps réel." />
+    <title>NANOTECH // SUIT-UP</title>
   </head>
   <body>
-    <main class="shell">
+    <main class="app-shell">
       <header class="topbar">
-        <div class="brand"><span class="brand-mark">S</span><span>STARK INDUSTRIES<small>NANOTECH // LIVE ARMOR SYSTEM</small></span></div>
-        <div class="connection"><i id="connection-dot" class="dot"></i><span id="connection-status">SYSTÈME EN ATTENTE</span></div>
-        <button id="camera-button" class="button">INITIALISER LA CAMÉRA</button>
+        <a class="brand" href="#" aria-label="Nanotech Suit-Up, accueil">
+          <span class="brand-mark">N</span>
+          <span>NANOTECH<span class="brand-muted"> / SUIT-UP</span></span>
+        </a>
+        <div class="system-state"><span class="state-dot"></span><span id="system-status">SYSTÈME EN ATTENTE</span></div>
+        <button id="camera-button" class="button button-primary">INITIALISER LA CAMÉRA</button>
       </header>
-      <section class="workspace" aria-label="Essayage de l'armure en réalité augmentée">
-        <div id="stage" class="stage">
-          <video id="webcam" autoplay muted playsinline></video>
-          <canvas id="scene"></canvas>
-          <div class="scan"></div>
-          <div class="stage-label"><span>●</span> VISION EN DIRECT <span id="tracking-status">/ ATTENTE</span></div>
-          <div class="reticle" aria-hidden="true"></div>
-          <div id="tracking-hint" class="hint">Initialisez la webcam pour démarrer la détection des articulations.</div>
+
+      <section class="workspace" aria-label="Aperçu de réalité augmentée">
+        <div id="viewport" class="viewport">
+          <video id="webcam" autoplay playsinline muted></video>
+          <canvas id="ar-canvas"></canvas>
+          <div class="scanlines" aria-hidden="true"></div>
+          <div class="corner corner-tl"></div><div class="corner corner-tr"></div>
+          <div class="corner corner-bl"></div><div class="corner corner-br"></div>
+          <div class="viewport-label"><span class="live-dot"></span> VISION EN DIRECT <span id="tracking-label">/ EN ATTENTE</span></div>
+          <div id="tracking-hint" class="tracking-hint" hidden></div>
+          <div id="loading-overlay" class="loading-overlay">
+            <div class="reticle"><span></span></div>
+            <p>CAMÉRA DÉSACTIVÉE</p>
+            <span>Initialisez la caméra pour commencer le suivi du corps.</span>
+          </div>
+          <div id="error-banner" class="error-banner" role="alert" hidden></div>
         </div>
-        <aside class="panel">
-          <div class="panel-head">J.A.R.V.I.S. // INTERFACE DE COMBAT</div>
-          <section class="module">
-            <div class="module-title"><b>01</b> TÉLÉMÉTRIE CORPORELLE</div>
-            <div class="metric"><span>LIEN SERVEUR</span><span id="socket-status" class="value">HORS LIGNE</span></div>
-            <div class="metric"><span>POSE</span><span id="pose-status" class="value">EN ATTENTE</span></div>
-            <div class="metric"><span>CONFIANCE</span><span id="confidence" class="value">— %</span></div>
-            <div class="metric"><span>VITESSE DE TRAITEMENT</span><span id="fps" class="value">— FPS</span></div>
-            <div class="metric"><span>LATENCE VISION</span><span id="latency" class="value">— ms</span></div>
-            <label class="debug"><input id="debug-toggle" type="checkbox" /> VISUALISER LES ARTICULATIONS</label>
-          </section>
-          <section class="module">
-            <div class="module-title"><b>02</b> ARMURE MOTORISÉE</div>
-            <div class="metric"><span>PLASTRON</span><span id="chest-status" class="value">EN ATTENTE</span></div>
-            <div class="health"><i id="chest-health"></i></div>
-            <div class="metric"><span>GANTELET GAUCHE</span><span id="left-status" class="value">EN ATTENTE</span></div>
-            <div class="health gold"><i id="left-health"></i></div>
-            <div class="metric"><span>GANTELET DROIT</span><span id="right-status" class="value">EN ATTENTE</span></div>
-            <div class="health gold"><i id="right-health"></i></div>
-            <div class="metric"><span>RÉACTEUR ARC</span><span id="reactor-status" class="value gold">STANDBY</span></div>
-            <div class="health"><i id="reactor-health"></i></div>
-          </section>
-          <section class="module">
-            <div class="module-title"><b>03</b> SÉQUENCE NANOTECH</div>
-            <div class="progress"><i id="suit-progress"></i></div>
-            <div class="progress-label"><span id="suit-label">PRÊT À L’ACTIVATION</span><span id="suit-value">0%</span></div>
-            <button id="suit-button" class="button gold" disabled>LANCER LE SUIT-UP</button>
-            <p class="help">Placez épaules et bassin dans le cadre. Le suit-up anime les pièces procédurales suivies par la pose.</p>
-          </section>
-          <div class="panel-footer">FLUX VIDÉO LOCAL · ENVOYÉ AU SERVEUR LOCAL UNIQUEMENT</div>
+
+        <aside class="control-panel">
+          <div class="panel-heading"><span class="eyebrow">INTERFACE DE CONTRÔLE</span><span class="panel-code">MK // 85</span></div>
+          <div class="panel-section suit-card">
+            <div class="section-title"><span>01</span> CONFIGURATION DE L’ARMURE</div>
+            <label class="field-label" for="model-select">PLATEFORME</label>
+            <select id="model-select" aria-label="Sélectionner la plateforme d’armure">
+              <option value="procedural">NANOTECH // PROCÉDURALE</option>
+              <option value="custom" disabled>ARMURE // MODÈLE GLB</option>
+            </select>
+            <label class="upload-button" for="model-file">CHARGER UN MODÈLE 3D (.GLB)<input id="model-file" type="file" accept=".glb,model/gltf-binary" /></label>
+            <p class="hint">Un GLB riggé avec clips d’animation est recommandé. Les matériaux importés reçoivent l’effet shader de matérialisation.</p>
+          </div>
+
+          <div class="panel-section">
+            <div class="section-title"><span>02</span> ÉTAT DU SYSTÈME</div>
+            <div class="metric-row"><span>POSE</span><span id="pose-status" class="metric-value">HORS LIGNE</span></div>
+            <div class="metric-row"><span>CONFIANCE DU SUIVI</span><span id="tracking-confidence" class="metric-value">— %</span></div>
+            <div class="metric-row"><span>VISAGE</span><span id="face-status" class="metric-value">HORS LIGNE</span></div>
+            <div class="metric-row"><span>GESTE</span><span id="hand-status" class="metric-value">HORS LIGNE</span></div>
+            <div class="metric-row"><span>RENDU</span><span id="fps-status" class="metric-value">— FPS</span></div>
+            <label class="debug-toggle"><input id="pose-debug-toggle" type="checkbox" /> AFFICHER LES ARTICULATIONS SUIVIES</label>
+          </div>
+
+          <div class="panel-section">
+            <div class="section-title"><span>03</span> SÉQUENCE D’ÉQUIPEMENT</div>
+            <div class="progress-track"><div id="suit-progress-bar"></div></div>
+            <div class="progress-label"><span id="suit-progress-label">PRÊT À L’ACTIVATION</span><span id="suit-progress-value">0%</span></div>
+            <button id="suit-button" class="button button-secondary" disabled>LANCER LE SUIT-UP</button>
+            <p class="hint">Arc reactor → buste → membres → casque. Fermez le poing pour relancer la séquence.</p>
+          </div>
+          <footer class="panel-footer">TRAITEMENT LOCAL · AUCUNE VIDÉO ENVOYÉE</footer>
         </aside>
       </section>
-      <footer class="bottombar"><span>STARK // SUIT-UP ENGINE 1.0</span><span>FASTAPI · OPENCV · MEDIAPIPE · THREE.JS</span><span>WEBCAM · AUTORISATION REQUISE</span></footer>
+      <footer class="bottom-bar"><span>SUIT-UP ENGINE <b>0.1.0</b></span><span>WEBGL · MEDIAPIPE TASKS VISION · THREE.JS</span><span>CAMÉRA REQUISE · HTTPS / LOCALHOST</span></footer>
     </main>
-    <script type="module" src="/js/app.js"></script>
+    <script type="module" src="/src/main.js"></script>
   </body>
 </html>
